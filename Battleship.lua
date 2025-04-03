@@ -24,41 +24,61 @@ function ARRANGESHIP(size, shipNumber)
     local randomRow = math.random(1, 10);
     local randomCell
     local index = 0;
+	
+	-- Get a random cell in the row, ensuring it is empty
     repeat
         randomCell = math.random(1, 10);   
         index = index + 1
     until index > 10 or BOARD[randomRow][randomCell] == "-"
+	
+	-- If the loop ended and the selected row is occupied, then unlucky and try again
+	-- recursion is very fun !!!!
+	if(BOARD[randomRow][randomCell] ~= "-")
+		return ARRANGESHIP(size, shipNumber);
+	
+	-- Get a random direction
     local randomDirection = math.random(1, 2)
     
     -- right
     local occupiedSpaces = false
     if randomDirection == 1 then
+		-- Check if selected cell is too far right for the ship
         if randomCell > size then
             randomCell = size
         end
+		
+		-- Ensure the selected spaces are free
         for i = randomCell, randomCell + size - 1 do
             occupiedSpaces = BOARD[randomRow][i] ~= "-"
         end
-
+		
+		-- Not free, try again
+		-- recursion is very fun !!!!
         if occupiedSpaces then
             ARRANGESHIP(size, shipNumber)
         else
+			-- Free, assign ship
             for i = randomCell, randomCell + size - 1 do
                 BOARD[randomRow][i] = shipNumber
             end
         end
     -- down
-    else  
+    else
+		-- Check if selected cell is too far right for the ship
         if randomRow > size then
             randomRow = size
         end
+		-- Ensure the selected spaces are free
         for i = randomRow, randomRow + size - 1 do
             occupiedSpaces = BOARD[i][randomCell] ~= "-"
         end
-
+		
+		-- Not free, try again
+		-- recursion is very fun !!!!
         if occupiedSpaces then
             ARRANGESHIP(size, shipNumber)
         else
+			-- Free, assign ship
             for i = randomRow, randomRow + size - 1 do
                 BOARD[i][randomCell] = shipNumber
             end
@@ -71,17 +91,22 @@ function SELECTCELL()
     local cell = READNUMBER("cell")
     GUESSES = GUESSES + 1
 
+	-- Ensure the user is not an idiot with no memory
     if BOARD[row][cell] == "X" or BOARD[row][cell] == "O" then
         io.write("Cell already selected!\n")
         return
     end
-
+	-- Holy they actually hit something
     if BOARD[row][cell] ~= "-" and BOARD[row][cell] ~= "O" then
         io.write("Hit!")
         local ship = BOARD[row][cell]
         PLAYERBOARD[row][cell] = "X"
         BOARD[row][cell] = "X"
 
+		-- Check if the ship is sunk
+		-- we could check the row and column but for the sake of simplicity
+		-- we straight up check all the cells
+		-- iterating 100 cells is basically free anyway
         local sunkShip = true;
         for i=1, 10 do
             for j=1, 10 do
@@ -97,6 +122,7 @@ function SELECTCELL()
             SUNKSHIPS = SUNKSHIPS + 1
         end
     else 
+		-- loser lmao
         io.write("Miss!")
         PLAYERBOARD[row][cell] = "O"
     end
