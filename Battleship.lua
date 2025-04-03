@@ -33,8 +33,9 @@ function ARRANGESHIP(size, shipNumber)
 	
 	-- If the loop ended and the selected row is occupied, then unlucky and try again
 	-- recursion is very fun !!!!
-	if(BOARD[randomRow][randomCell] ~= "-")
-		return ARRANGESHIP(size, shipNumber);
+	if(BOARD[randomRow][randomCell] ~= "-") then
+		return ARRANGESHIP(size, shipNumber)
+    end
 	
 	-- Get a random direction
     local randomDirection = math.random(1, 2)
